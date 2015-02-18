@@ -40,22 +40,26 @@ AND v.tid = t.tid
 AND (t.annee = 2009 or t.annee = 2010)
 GROUP BY CUBE (c.cl_r, p.CATEGORY, annee);*/
 
-/* Question 2.3 */
-SELECT RANK() OVER(PARTITION BY (annee, CL_NAME) ORDER BY QTE DESC), t.annee, p.CATEGORY, p.PNAME
+/* Question 2.3  */
+
+SELECT  annee, p.PNAME, SUM(QTE*PU) as r
+FROM(
+SELECT  annee, p.PNAME, RANK() OVER(PARTITION BY annee, CATEGORY ORDER BY SUM(QTE*PU) DESC) as rang
 FROM VENTES v, TEMPS t, PRODUITS p, CLIENTS c
 WHERE c.cl_id = v.cid
 AND v.pid = p.pid
-AND v.tid = t.tid;
+AND v.tid = t.tid)
+WHERE r=1;
 
 /* Question 2.4 
 
-SELECT GROUPING_ID (annee, CATEGORY), annee, CATEGORY, (QTE*PU) AS CA_TOTAL
+SELECT CATEGORY, annee, (QTE*PU) AS CA_TOTAL
 FROM VENTES v, TEMPS t, PRODUITS p, CLIENTS c
 WHERE c.cl_id = v.cid
 AND v.pid = p.pid
 AND v.tid = t.tid;
-
- Question 2.5 
+*/
+/* Question 2.5 
 
 SELECT GROUPING_ID (annee), annee, CATEGORY, MAX(QTE*PU) AS CA_TOTAL
 FROM VENTES v, TEMPS t, PRODUITS p, CLIENTS c

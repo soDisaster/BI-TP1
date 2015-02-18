@@ -41,7 +41,7 @@ AND (t.annee = 2009 or t.annee = 2010)
 GROUP BY CUBE (c.cl_r, p.CATEGORY, annee);*/
 
 /* Question 2.3 */
-SELECT RANK() OVER(PARTITION BY (annee, CL_NAME) ORDER BY QTE DESC), t.annee, p.CATEGORY, p.PNAME
+SELECT RANK() OVER(PARTITION BY (annee AND CL_NAME) ORDER BY QTE DESC), t.annee, p.CATEGORY, p.PNAME
 FROM VENTES v, TEMPS t, PRODUITS p, CLIENTS c
 WHERE c.cl_id = v.cid
 AND v.pid = p.pid
